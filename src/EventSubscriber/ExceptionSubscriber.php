@@ -5,6 +5,7 @@ namespace App\EventSubscriber;
 use App\Exception\SiteErrorException;
 use App\Repository\SiteErrorRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionSubscriber implements EventSubscriberInterface
@@ -28,6 +29,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
         if ($event->getException() instanceof SiteErrorException) {
             // Your custom logic here
             $this->siteErrorRepository->fooBar();
+
+            $event->setResponse((new Response())->setContent('your custom content'));
         }
     }
 }
