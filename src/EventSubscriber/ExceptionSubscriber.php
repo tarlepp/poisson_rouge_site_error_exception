@@ -12,25 +12,26 @@ class ExceptionSubscriber implements EventSubscriberInterface
 {
     private $siteErrorRepository;
 
-    public function __construct(SiteErrorRepository $siteErrorRepository)
-    {
-        $this->siteErrorRepository = $siteErrorRepository;
-    }
-
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
            'kernel.exception' => 'onKernelException',
         ];
     }
 
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    public function __construct(SiteErrorRepository $siteErrorRepository)
+    {
+        $this->siteErrorRepository = $siteErrorRepository;
+    }
+
+    public function onKernelException(GetResponseForExceptionEvent $event): void
     {
         if ($event->getException() instanceof SiteErrorException) {
             // Your custom logic here
             $this->siteErrorRepository->fooBar();
 
-            $event->setResponse((new Response())->setContent('your custom content'));
+            $event->setResponse(new Response('custom content', 418));
+            $event->allowCustomResponseCode();
         }
     }
 }
